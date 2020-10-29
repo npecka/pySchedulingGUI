@@ -1,17 +1,18 @@
 import tkinter
-
+import numpy
 
 # Input is task set
 # Run utilization test
 # If needed run exact analysis based on threshold
 # If pass/fail notify user
 # If pass then move on to scheduling
-# RMS does scheduling based on priority via lowest period
+# RMS does scheduling based on priority via smallest period
 # If task is available then override based on priority
 
 
 class RMS:
 
+    # Expected task format ci, pi, dl
     def __init__(self, task1, task2):
         self.task1 = task1
         self.task2 = task2
@@ -33,6 +34,26 @@ class RMS:
     def exact_analysis(self):
         self.speed += 5
 
+    # compare task priorities
+    # lowest priority wins
+    def priority_order(self):
+        if self.task1 <= self.task2:
+            return True
+        else:
+            return False
+
+    # schedule task based on lowest priority
+    # schedule up to LCM of the deadlines
+    # Phase 1: print array of tasks in order
+    # Phase final: prints excel style on GUI
+    def rms_schedule(self):
+        flag = self.priority_order()
+        lcm = numpy.lcm(int(self.task1[1]), int(self.task2[1]))
+        if flag is True:
+            firstTask = lcm / self.task1[2]
+        else:
+            firstTask = lcm / self.task2[2]
+
 
 # Input is task set
 # Run utilization test
@@ -52,8 +73,9 @@ class EDF:
 
     # Utilization test will take ci/pi of each task
     # It will then add them all together
-    # Then check if it is < n(2^1/n - 1)
+    # Then check if it is <= 1
     # Where n is # of tasks
+    # Necessary for EDF and sufficient
     def utilization_test(self):
         util1 = float(self.task1[0]) / float(self.task1[1])
         util2 = float(self.task2[0]) / float(self.task2[1])
@@ -90,28 +112,9 @@ if __name__ == '__main__':
         edf = EDF(t1, t2)
 
         print(rms.utilization_test())
-
+        print(rms.rms_schedule())
 
         # TKinter setup for GUI of scheduling
 
-        #top = tkinter.tk()
+        #top = tkinter.Tk()
         #top.mainloop()
-
-
-    #print("I'm a car!")
-    #while True:
-        #action = input("What should I do? [A]ccelerate, [B]rake, "
-        #         "show [O]dometer, or show average [S]peed?").upper()
-        #if action not in "ABOS" or len(action) != 1:
-        #    print("I don't know how to do that")
-        #    continue
-        #if action == 'A':
-        #    my_car.accelerate()
-        #elif action == 'B':
-        #    my_car.brake()
-        #elif action == 'O':
-        #    print("The car has driven {} kilometers".format(my_car.odometer))
-        #elif action == 'S':
-        #    print("The car's average speed was {} kph".format(my_car.average_speed()))
-        #my_car.step()
-        #my_car.say_state()
