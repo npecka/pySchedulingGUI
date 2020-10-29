@@ -1,4 +1,4 @@
-import Tkinter
+import tkinter
 
 
 # Input is task set
@@ -76,22 +76,25 @@ if __name__ == '__main__':
 
         action = input("Please input 2 task sets in format \"Ci, Pi, Dl\", \"Ci, Pi, Dl\" ")
         if len(action) == 6:
-            print action
+            print(action)
         else:
-            print "Invalid task set entered"
+            print("Invalid task set entered")
             break
         t1 = action[0:3]
         t2 = action[3:6]
 
+        print(t1)
+        print(t2)
+
         rms = RMS(t1, t2)
         edf = EDF(t1, t2)
 
-        print rms.utilization_test()
+        print(rms.utilization_test())
 
 
         # TKinter setup for GUI of scheduling
 
-        #top = Tkinter.Tk()
+        #top = tkinter.tk()
         #top.mainloop()
 
 
