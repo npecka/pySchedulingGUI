@@ -2,6 +2,7 @@ import tkinter
 import numpy
 from math import gcd
 
+
 # Input is task set
 # Run utilization test
 # If needed run exact analysis based on threshold
@@ -31,8 +32,37 @@ class RMS:
         else:
             return False
 
+    # exact analysis
+    # Get task priority
+    # iterate through priorities
+    # add all as iterating
+    # for each iteration take # of tasks get total Ci
+    # check if each task is below that deadline
+    # if not then if it's not the last task, times 2 and check again
+    # continue doing so until deadlines qualify or until failure
     def exact_analysis(self):
-        flag = self.priority_order()
+        p_order = self.priority_order()
+        print(p_order)
+        total_ci = 0
+        flag = True
+        for x in range(len(p_order)):
+            total_ci = total_ci + int(p_order[x][0])
+            total_ci_tmp = total_ci
+            p_order_tmp = p_order
+            i = 0
+            while i < x:
+                if int(p_order_tmp[x][2]) < total_ci_tmp:
+                    flag = False
+                    break
+                elif int(p_order_tmp[i][2]) < total_ci_tmp:
+                    total_ci_tmp = total_ci_tmp + int(p_order_tmp[i][0])
+                    p_order_tmp[i] = str(int(p_order_tmp[i][0]) + int(p_order_tmp[i][0])) + \
+                                     str(int(p_order_tmp[i][1]) + int(p_order_tmp[i][1])) + \
+                                     str(int(p_order_tmp[i][2]) + int(p_order_tmp[i][2]))
+                    i = 0
+                else:
+                    i += 1
+        return flag
 
     # compare task priorities
     # lowest priority wins
@@ -64,12 +94,16 @@ class RMS:
     # Phase 1: print array of tasks in order
     # Phase final: prints excel style on GUI
     def rms_schedule(self):
+        flag = self.exact_analysis()
+        if flag is False:
+            print("Unschedulable")
+            return
+
         p_order = self.priority_order()
         lcm = self.lcm_rms()
 
         # TODO
 
-        flag = True
         array = []
         if flag is True:
             first_task = numpy.floor(lcm / int(self.task1[2]))
@@ -110,13 +144,14 @@ class EDF:
     # Necessary for EDF and sufficient
     def utilization_test(self):
         util1 = float(self.task[0]) / float(self.task[1])
-        #util2 = float(self.task2[0]) / float(self.task2[1])
-        #util3 = util1 + util2
+        # util2 = float(self.task2[0]) / float(self.task2[1])
+        # util3 = util1 + util2
         # u_test = n(2^1/n - 1)
-        #if util3 <= 1:
+        # if util3 <= 1:
         #    return True
-        #else:
+        # else:
         #    return False
+
 
 # Two entries, RMS and EDF
 # Input is a task set
@@ -139,14 +174,15 @@ if __name__ == '__main__':
             break
 
         rms = RMS(task_sets)
-        #edf = EDF(task_sets)
+        # edf = EDF(task_sets)
 
-        #print(rms.utilization_test())
-        #rms.priority_order()
-        #rms.lcm_rms()
-        #print(rms.rms_schedule())
+        # print(rms.utilization_test())
+        # rms.priority_order()
+        # rms.lcm_rms()
+        print(rms.exact_analysis())
+        # print(rms.rms_schedule())
 
         # TKinter setup for GUI of scheduling
 
-        #top = tkinter.Tk()
-        #top.mainloop()
+        # top = tkinter.Tk()
+        # top.mainloop()
