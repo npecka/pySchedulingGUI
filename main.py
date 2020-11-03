@@ -41,7 +41,7 @@ class RMS:
     # if not then if it's not the last task, times 2 and check again
     # continue doing so until deadlines qualify or until failure
     def exact_analysis(self):
-        p_order = self.priority_order()
+        p_order = self.priority_order(self.task)
         print(p_order)
         total_ci = 0
         flag = True
@@ -68,10 +68,11 @@ class RMS:
     # lowest priority wins
     # create array of tasks in order
     # highest to lowest priority order
-    def priority_order(self):
+    @staticmethod
+    def priority_order(task):
         ordered_array = []
-        for x in range(len(self.task)):
-            copy_array = self.task
+        for x in range(len(task)):
+            copy_array = task
             temp = [copy_array[0]]
             for y in range(len(copy_array)):
                 if temp[0][1] >= copy_array[y][1]:
@@ -80,45 +81,33 @@ class RMS:
             copy_array.remove(temp[0])
         return ordered_array
 
-    def lcm_rms(self):
+    # compare task priorities
+    # lowest priority wins
+    # create array of tasks in order
+    # highest to lowest priority order
+    @staticmethod
+    def priority_order_task_name(task):
+        ordered_array = []
+        for x in range(len(task)):
+            copy_array = task
+            temp = [copy_array[0]]
+            for y in range(len(copy_array)):
+                if temp[0][1] >= copy_array[y][1]:
+                    temp = [copy_array[y]]
+            ordered_array.append(temp[0])
+            copy_array.remove(temp[0])
+        return ordered_array
+
+    @staticmethod
+    def lcm_rms(task):
         list_of_deadlines = []
-        for x in range(len(self.task)):
-            list_of_deadlines.append(int(self.task[x][2]))
+        for x in range(len(task)):
+            list_of_deadlines.append(int(task[x][2]))
+        print(list_of_deadlines)
         lcm = list_of_deadlines[0]
         for i in list_of_deadlines[1:]:
             lcm = lcm * i // gcd(lcm, i)
         return lcm
-
-    # schedule task based on lowest priority
-    # schedule up to LCM of the deadlines
-    # Phase 1: print array of tasks in order
-    # Phase final: prints excel style on GUI
-    def rms_schedule(self):
-        flag = self.exact_analysis()
-        if flag is False:
-            print("Unschedulable")
-            return
-
-        p_order = self.priority_order()
-        lcm = self.lcm_rms()
-
-        # TODO
-
-        array = []
-        if flag is True:
-            first_task = numpy.floor(lcm / int(self.task1[2]))
-            second_task = numpy.floor(lcm / int(self.task2[2]))
-            amount_to_be_scheduled = int(first_task) + int(second_task)
-            for x in range(amount_to_be_scheduled):
-                if flag is True:
-                    array.append("T1")
-                    flag = False
-                else:
-                    array.append("T2")
-                    flag = True
-            print(array)
-        else:
-            first_task = numpy.floor(lcm / int(self.task2[2]))
 
 
 # Input is task set
@@ -158,6 +147,32 @@ class EDF:
 # Task set is run through each function
 # output of each is generated via GUI using Tkinter
 
+# schedule task based on lowest priority
+# schedule up to LCM of the deadlines
+# Phase 1: print array of tasks in order
+# Phase final: prints excel style on GUI
+def rms_schedule(p_order, lcm):
+    queue = []
+    for x in range(len(p_order)):
+        queue.append(int(p_order[x][0]))
+    organized_array = []
+    temp = 0
+    queue_copy = queue.copy()
+    for x in range(lcm):
+        organized_array.append(p_order[temp])
+        for y in range(len(queue)):
+            if x != 0 and x % int(p_order[y][2]) == 0:
+                queue_copy[y] += queue[y]
+                temp = y
+                queue_copy[y] -= 1
+                break
+            elif queue_copy[y] > 0:
+                queue_copy[y] -= 1
+                if queue_copy[y] != 0:
+                    temp = y
+                    break
+    print(organized_array)
+
 
 if __name__ == '__main__':
 
@@ -174,12 +189,22 @@ if __name__ == '__main__':
             break
 
         rms = RMS(task_sets)
+        least_common_multiple = rms.lcm_rms(task_sets)
+        priority_order = rms.priority_order(task_sets)
+        flag = rms.exact_analysis()
+
+        if flag is False:
+            print("Unschedulable")
+        else:
+            rms_schedule(priority_order, least_common_multiple)
+
         # edf = EDF(task_sets)
 
-        # print(rms.utilization_test())
-        # rms.priority_order()
+        #for x in range(len(order)):
+        #    if order[x] == task_sets[x]:
+        #        print("T1")
         # rms.lcm_rms()
-        print(rms.exact_analysis())
+        #print(rms.exact_analysis())
         # print(rms.rms_schedule())
 
         # TKinter setup for GUI of scheduling
