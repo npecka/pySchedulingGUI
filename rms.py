@@ -14,7 +14,7 @@ class RMS:
     # Where n is # of tasks
     def utilization_test(self):
         u_task = 0
-        for x in range(len(task_sets)):
+        for x in range(len(self.task)):
             u_task = u_task + (float(self.task[x][0]) / float(self.task[x][1]))
         u_test = len(self.task) * (pow(2, 1 / len(self.task)) - 1)
         if u_task <= u_test:
@@ -98,3 +98,45 @@ class RMS:
         for i in list_of_deadlines[1:]:
             lcm = lcm * i // gcd(lcm, i)
         return lcm
+
+    @staticmethod
+    def rms_schedule(p_order, lcm):
+        queue = []
+        for x in range(len(p_order)):
+            queue.append(int(p_order[x][0]))
+        organized_array = []
+        temp = 0
+        queue_copy = queue.copy()
+        queue_flag = 0
+
+        # arrays made at this point
+
+        for x in range(lcm+1):
+            if x != 0:
+                if temp == "":
+                    organized_array.append(0)
+                    queue_flag = 0
+                else:
+                    organized_array.append(p_order[temp])
+                    queue_flag = 0
+            for y in range(len(queue)):
+                if x != 0 and x % int(p_order[y][2]) == 0:
+                    queue_copy[y] += queue[y]
+                if queue_flag == 0:
+                    if queue_copy[y] > 0:
+                        temp = y
+                        queue_copy[y] -= 1
+                        queue_flag = 1
+                    else:
+                        temp = ""
+        print(organized_array)
+        print(len(organized_array))
+        t_array = []
+        for x in range(len(organized_array)):
+            for y in range(len(p_order)):
+                if organized_array[x] == 0:
+                    t_array.append(" ")
+                    break
+                elif organized_array[x] == p_order[y]:
+                    t_array.append("T" + str(y + 1))
+        print(t_array)

@@ -7,31 +7,11 @@ import edf
 # Task set is run through each function
 # output of each is generated via GUI using Tkinter
 
+
 # schedule task based on lowest priority
 # schedule up to LCM of the deadlines
 # Phase 1: print array of tasks in order
 # Phase final: prints excel style on GUI
-def rms_schedule(p_order, lcm):
-    queue = []
-    for x in range(len(p_order)):
-        queue.append(int(p_order[x][0]))
-    organized_array = []
-    temp = 0
-    queue_copy = queue.copy()
-    for x in range(lcm):
-        organized_array.append(p_order[temp])
-        for y in range(len(queue)):
-            if x != 0 and x % int(p_order[y][2]) == 0:
-                queue_copy[y] += queue[y]
-                temp = y
-                queue_copy[y] -= 1
-                break
-            elif queue_copy[y] > 0:
-                queue_copy[y] -= 1
-                if queue_copy[y] != 0:
-                    temp = y
-                    break
-    print(organized_array)
 
 
 if __name__ == '__main__':
@@ -56,16 +36,9 @@ if __name__ == '__main__':
         if flag is False:
             print("Unschedulable")
         else:
-            rms_schedule(priority_order, least_common_multiple)
+            rms.rms_schedule(priority_order, least_common_multiple)
 
         # edf = EDF(task_sets)
-
-        #for x in range(len(order)):
-        #    if order[x] == task_sets[x]:
-        #        print("T1")
-        # rms.lcm_rms()
-        #print(rms.exact_analysis())
-        # print(rms.rms_schedule())
 
         # TKinter setup for GUI of scheduling
 
