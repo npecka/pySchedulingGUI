@@ -71,23 +71,6 @@ class RMS:
             copy_array.remove(temp[0])
         return ordered_array
 
-    # compare task priorities
-    # lowest priority wins
-    # create array of tasks in order
-    # highest to lowest priority order
-    @staticmethod
-    def priority_order_task_name(task):
-        ordered_array = []
-        for x in range(len(task)):
-            copy_array = task
-            temp = [copy_array[0]]
-            for y in range(len(copy_array)):
-                if temp[0][1] >= copy_array[y][1]:
-                    temp = [copy_array[y]]
-            ordered_array.append(temp[0])
-            copy_array.remove(temp[0])
-        return ordered_array
-
     @staticmethod
     def lcm_rms(task):
         list_of_deadlines = []
