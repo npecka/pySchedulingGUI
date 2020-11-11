@@ -1,4 +1,4 @@
-import numpy
+import numpy as np
 from math import gcd
 
 
@@ -62,13 +62,14 @@ class RMS:
     def priority_order(task):
         ordered_array = []
         for x in range(len(task)):
-            copy_array = task
+            copy_array = np.array(task)
             temp = [copy_array[0]]
             for y in range(len(copy_array)):
                 if temp[0][1] >= copy_array[y][1]:
                     temp = [copy_array[y]]
             ordered_array.append(temp[0])
-            copy_array.remove(temp[0])
+            np.delete(copy_array, temp[0], 0)
+        print(ordered_array)
         return ordered_array
 
     @staticmethod
