@@ -32,7 +32,6 @@ class RMS:
     # continue doing so until deadlines qualify or until failure
     def exact_analysis(self):
         p_order = self.priority_order(self.task)
-        print(p_order)
         total_ci = 0
         flag = True
         for x in range(len(p_order)):
@@ -61,23 +60,23 @@ class RMS:
     @staticmethod
     def priority_order(task):
         ordered_array = []
+        copy_array = np.copy(task)
         for x in range(len(task)):
-            copy_array = np.array(task)
-            temp = [copy_array[0]]
+            temp = np.copy(copy_array[0])
             for y in range(len(copy_array)):
-                if temp[0][1] >= copy_array[y][1]:
-                    temp = [copy_array[y]]
-            ordered_array.append(temp[0])
-            np.delete(copy_array, temp[0], 0)
-        print(ordered_array)
-        return ordered_array
+                if temp[1] >= copy_array[y][1]:
+                    temp = np.copy(copy_array[y])
+            ordered_array.append(temp)
+            test_r = np.where((copy_array == temp).all(axis=1))
+            copy_array = np.delete(copy_array, test_r[0][0], 0)
+        order_array = np.array(ordered_array)
+        return order_array
 
     @staticmethod
     def lcm_rms(task):
         list_of_deadlines = []
         for x in range(len(task)):
             list_of_deadlines.append(int(task[x][2]))
-        print(list_of_deadlines)
         lcm = list_of_deadlines[0]
         for i in list_of_deadlines[1:]:
             lcm = lcm * i // gcd(lcm, i)
@@ -87,7 +86,7 @@ class RMS:
     def rms_schedule(p_order, lcm):
         queue = []
         for x in range(len(p_order)):
-            queue.append(int(p_order[x][0]))
+            queue.append(p_order[x][0])
         organized_array = []
         temp = 0
         queue_copy = queue.copy()
@@ -113,14 +112,13 @@ class RMS:
                         queue_flag = 1
                     else:
                         temp = ""
-        print(organized_array)
-        print(len(organized_array))
+        org_array = np.array(organized_array, dtype="object")
         t_array = []
-        for x in range(len(organized_array)):
+        for x in range(len(org_array)):
             for y in range(len(p_order)):
-                if organized_array[x] == 0:
+                if np.array_equal(org_array[x], 0):
                     t_array.append(" ")
                     break
-                elif organized_array[x] == p_order[y]:
+                elif np.array_equal(org_array[x], p_order[y]):
                     t_array.append("T" + str(y + 1))
         print(t_array)

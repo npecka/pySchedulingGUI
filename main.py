@@ -24,27 +24,25 @@ if __name__ == '__main__':
         task = replace.split(" ")
         task_convert = np.array(task)
         tasks = task_convert.astype(int)
-        print(len(tasks))
         n = int(len(task) / 3)
         m = 3
         task_sets = tasks.reshape(n, m)
-        print(task_sets)
 
-        if len(tasks) >= 6:
-            print(task_sets)
-        else:
+        if len(tasks) < 6:
             print("Invalid task set entered")
             break
 
         rms = RMS(task_sets)
         least_common_multiple = rms.lcm_rms(task_sets)
+        # print(least_common_multiple)
         priority_order = rms.priority_order(task_sets)
-        #flag = rms.exact_analysis()
+        # print(priority_order)
+        flag = rms.exact_analysis()
 
-        #if flag is False:
-        #    print("Unschedulable")
-        #else:
-        #    rms.rms_schedule(priority_order, least_common_multiple)
+        if flag is False:
+            print("Unschedulable")
+        else:
+            rms.rms_schedule(priority_order, least_common_multiple)
 
         #edf = EDF(task_sets)
         #l_c_m = edf.lcm_edf(task_sets)
