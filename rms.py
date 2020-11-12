@@ -83,18 +83,15 @@ class RMS:
         return lcm
 
     @staticmethod
-    def rms_schedule(p_order, lcm):
-        queue = []
-        for x in range(len(p_order)):
-            queue.append(p_order[x][0])
+    def rms_schedule(p_order, lcm, original_order):
+        queue_order = np.copy(p_order)
+        row = queue_order.shape[0]
         organized_array = []
         temp = 0
-        queue_copy = queue.copy()
         queue_flag = 0
-
         # arrays made at this point
 
-        for x in range(lcm+1):
+        for x in range(lcm + 1):
             if x != 0:
                 if temp == "":
                     organized_array.append(0)
@@ -102,13 +99,13 @@ class RMS:
                 else:
                     organized_array.append(p_order[temp])
                     queue_flag = 0
-            for y in range(len(queue)):
+            for y in range(row):
                 if x != 0 and x % int(p_order[y][2]) == 0:
-                    queue_copy[y] += queue[y]
+                    queue_order[y][0] += p_order[y][0]
                 if queue_flag == 0:
-                    if queue_copy[y] > 0:
+                    if queue_order[y][0] > 0:
                         temp = y
-                        queue_copy[y] -= 1
+                        queue_order[y][0] -= 1
                         queue_flag = 1
                     else:
                         temp = ""
@@ -119,6 +116,7 @@ class RMS:
                 if np.array_equal(org_array[x], 0):
                     t_array.append(" ")
                     break
-                elif np.array_equal(org_array[x], p_order[y]):
+                elif np.array_equal(org_array[x], original_order[y]):
                     t_array.append("T" + str(y + 1))
         print(t_array)
+        return t_array
