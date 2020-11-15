@@ -151,29 +151,6 @@ if __name__ == '__main__':
             point_in_sheet = number_of_tasks + 2
             return point_in_sheet
 
-
-        def print_scheduler_edf(string):
-            wb = openpyxl.load_workbook('results.xlsx')
-            ws = wb.worksheets[0]
-            sheet = wb[ws]
-            arr = edf_scheduler(string)
-            number_of_tasks = int(len(arr) / 3)
-
-            for i in range(len(arr)):
-                for j in range(number_of_tasks):
-                    string_check = 'T' + str(j + 1)
-                    if arr[i] == string_check:
-                        my_cell = sheet.cell(row=(j + 1), column=(i + 2))
-                        my_cell.value = arr[i]
-                        my_cell.alignment = Alignment(horizontal='center')
-                        my_cell = sheet.cell(row=(number_of_tasks + 1), column=(i + 1))
-                        my_cell.value = i
-                        my_cell.alignment = Alignment(horizontal='right')
-            my_cell = sheet.cell(row=(number_of_tasks + 1), column=(len(arr) + 1))
-            my_cell.value = len(arr)
-            my_cell.alignment = Alignment(horizontal='right')
-            wb.save('updatedResults.xlsx')
-
         def file_schedule_setup(flag):
             string = e.get()
             wb = openpyxl.load_workbook(string)
